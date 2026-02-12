@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GenBridge – Connecting Generations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #2F80ED;
+      --blue-dark:  #1a5fbd;
+      --blue-light: #EBF3FE;
+      --green:      #27AE60;
+      --green-light:#E8F8EF;
+      --white:      #F5F7FA;
+      --card:       #FFFFFF;
+      --text:       #1A2340;
+      --muted:      #6B7A99;
+      --border:     #D6E0F0;
+      --shadow:     0 8px 40px rgba(47,128,237,0.12);
+      --radius:     18px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── LAYOUT ── */
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left-panel {
+      position: relative;
+      background: linear-gradient(145deg, #1a5fbd 0%, #2F80ED 55%, #27AE60 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 56px 52px;
+      overflow: hidden;
+    }
+
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='380' cy='50' r='180' fill='rgba(255,255,255,0.06)'/%3E%3Ccircle cx='30' cy='380' r='140' fill='rgba(255,255,255,0.05)'/%3E%3Ccircle cx='200' cy='200' r='220' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E") center/cover no-repeat;
+    }
+
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; right: -60px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .logo {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 56px;
+    }
+
+    .logo-icon {
+      width: 52px; height: 52px;
+      background: white;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span { color: #a8e6c3; }
+
+    .panel-heading {
+      position: relative;
+      font-family: 'Playfair Display', serif;
+      font-size: 42px;
+      font-weight: 700;
+      color: white;
+      line-height: 1.22;
+      margin-bottom: 20px;
+    }
+
+    .panel-sub {
+      position: relative;
+      font-size: 17px;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.65;
+      max-width: 380px;
+      margin-bottom: 44px;
+      font-weight: 300;
+    }
+
+    .features {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255,255,255,0.13);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 14px 18px;
+      animation: slideInLeft 0.6s ease both;
+    }
+
+    .feature-item:nth-child(1) { animation-delay: 0.1s; }
+    .feature-item:nth-child(2) { animation-delay: 0.2s; }
+    .feature-item:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .feature-icon {
+      font-size: 22px;
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .feature-text { font-size: 15px; color: white; font-weight: 500; }
+    .feature-text small { display: block; font-weight: 300; font-size: 13px; opacity: 0.8; margin-top: 2px; }
+
+    /* ── RIGHT PANEL ── */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 48px 56px;
+      background: var(--white);
+      overflow-y: auto;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      background: #EDF0F7;
+      border-radius: 14px;
+      padding: 5px;
+      margin-bottom: 36px;
+      gap: 4px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 13px 20px;
+      border: none;
+      background: transparent;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    }
+
+    .tab.active {
+      background: white;
+      color: var(--blue);
+      box-shadow: 0 2px 12px rgba(47,128,237,0.18);
+    }
+
+    /* ── HEADINGS ── */
+    .form-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .form-sub {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 30px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    /* ── INPUT GROUPS ── */
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: 0.01em;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 15px 16px 15px 46px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      color: var(--text);
+      background: white;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(47,128,237,0.12);
+      background: #FAFCFF;
+    }
+
+    input::placeholder { color: #b0bac9; }
+
+    /* ── ROLE PICKER ── */
+    .role-section-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .role-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .role-card {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .role-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .role-inner {
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 14px;
+      text-align: center;
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+      background: white;
+      cursor: pointer;
+    }
+
+    .role-emoji {
+      font-size: 28px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .role-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .role-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .role-card input[type="radio"]:checked + .role-inner {
+      border-color: var(--blue);
+      background: var(--blue-light);
+      box-shadow: 0 0 0 3px rgba(47,128,237,0.15);
+    }
+
+    .role-card input[type="radio"]:checked + .role-inner .role-name {
+      color: var(--blue);
+    }
+
+    .role-inner:hover {
+      border-color: #a0bfed;
+      background: #f4f8ff;
+    }
+
+    /* ── PASSWORD TOGGLE ── */
+    .toggle-pw {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--muted);
+      padding: 0;
+      line-height: 1;
+    }
+
+    /* ── SUBMIT BUTTON ── */
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
+      box-shadow: 0 4px 20px rgba(47,128,237,0.35);
+      margin-top: 4px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(47,128,237,0.45);
+      filter: brightness(1.07);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ── SUCCESS STATE ── */
+    .success-btn {
+      background: linear-gradient(135deg, var(--green) 0%, #1e8449 100%);
+      box-shadow: 0 4px 20px rgba(39,174,96,0.35);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── SWITCH TEXT ── */
+    .switch-text {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .switch-text a {
+      color: var(--blue);
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .switch-text a:hover { text-decoration: underline; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      top: 28px;
+      right: 28px;
+      z-index: 999;
+      background: white;
+      border-left: 4px solid var(--green);
+      border-radius: 12px;
+      padding: 16px 22px;
+      box-shadow: 0 8px 36px rgba(0,0,0,0.14);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      transform: translateX(120%);
+      transition: transform 0.4s cubic-bezier(.175,.885,.32,1.275);
+      max-width: 360px;
+    }
+
+    .toast.show { transform: translateX(0); }
+    .toast-icon { font-size: 22px; }
+
+    /* ── FORM PANELS ── */
+    .form-panel { display: none; animation: fadeUp 0.4s ease both; }
+    .form-panel.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── ERROR ── */
+    .error-msg {
+      font-size: 12.5px;
+      color: #e74c3c;
+      margin-top: 5px;
+      display: none;
+    }
+    .input-group.has-error input { border-color: #e74c3c; }
+    .input-group.has-error .error-msg { display: block; }
+
+    /* ── FOOTER ── */
+    .panel-footer {
+      margin-top: 28px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 880px) {
+      .page { grid-template-columns: 1fr; }
+      .left-panel { display: none; }
+      .right-panel { padding: 36px 28px; }
+    }
+
+    @media (max-width: 420px) {
+      .right-panel { padding: 28px 18px; }
+      .role-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <!-- ── LEFT PANEL ── -->
+  <div class="left-panel">
+    <div class="logo">
+      <div class="logo-icon">🌉</div>
+      <div class="logo-text">Gen<span>Bridge</span></div>
+    </div>
+
+    <h1 class="panel-heading">Bringing<br/>Generations<br/>Closer.</h1>
+    <p class="panel-sub">A safe, simple platform where seniors find trusted helpers and young people make a real difference—one task at a time.</p>
+
+    <div class="features">
+      <div class="feature-item">
+        <div class="feature-icon">✅</div>
+        <div class="feature-text">
+          Verified Helpers
+          <small>Every helper is identity-verified for your safety</small>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📍</div>
+        <div class="feature-text">
+          Location Matching
+          <small>Find helpers right in your neighbourhood</small>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">💬</div>
+        <div class="feature-text">
+          Secure Messaging
+          <small>Chat safely inside the app, always private</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="right-panel">
+    <div class="form-container">
+
+      <!-- Tabs -->
+      <div class="tabs" role="tablist" aria-label="Sign In or Create Account">
+        <button class="tab active" id="tab-signin" role="tab" aria-selected="true" onclick="switchTab('signin')">Sign In</button>
+        <button class="tab"        id="tab-signup" role="tab" aria-selected="false" onclick="switchTab('signup')">Create Account</button>
+      </div>
+
+      <!-- ── SIGN IN PANEL ── -->
+      <div class="form-panel active" id="panel-signin">
+        <h2 class="form-title">Welcome back 👋</h2>
+        <p class="form-sub">Sign in to continue connecting with your community.</p>
+
+        <form id="form-signin" novalidate onsubmit="handleSignin(event)">
+          <div class="input-group" id="ig-si-email">
+            <label for="si-email">Email Address</label>
+            <div class="input-wrap">
+              <span class="input-icon">✉️</span>
+              <input type="email" id="si-email" placeholder="you@example.com" autocomplete="email"/>
+            </div>
+            <div class="error-msg" id="err-si-email">Please enter a valid email.</div>
+          </div>
+
+          <div class="input-group" id="ig-si-password">
+            <label for="si-password">Password</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="si-password" placeholder="Your password" autocomplete="current-password"/>
+              <button type="button" class="toggle-pw" onclick="togglePw('si-password', this)" aria-label="Toggle password visibility">👁️</button>
+            </div>
+            <div class="error-msg" id="err-si-password">Please enter your password.</div>
+          </div>
+
+          <button type="submit" class="btn-primary" id="btn-signin">Sign In</button>
+        </form>
+
+        <div class="switch-text">
+          Don't have an account? <a onclick="switchTab('signup')">Create one here</a>
+        </div>
+        <div class="panel-footer">By continuing, you agree to GenBridge's Terms of Service and Privacy Policy.</div>
+      </div>
+
+      <!-- ── SIGN UP PANEL ── -->
+      <div class="form-panel" id="panel-signup">
+        <h2 class="form-title">Join GenBridge 🌟</h2>
+        <p class="form-sub">Create your account and start making a difference today.</p>
+
+        <form id="form-signup" novalidate onsubmit="handleSignup(event)">
+          <div class="input-group" id="ig-su-name">
+            <label for="su-name">Full Name</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="su-name" placeholder="Your full name" autocomplete="name"/>
+            </div>
+            <div class="error-msg" id="err-su-name">Please enter your full name.</div>
+          </div>
+
+          <div class="input-group" id="ig-su-email">
+            <label for="su-email">Email Address</label>
+            <div class="input-wrap">
+              <span class="input-icon">✉️</span>
+              <input type="email" id="su-email" placeholder="you@example.com" autocomplete="email"/>
+            </div>
+            <div class="error-msg" id="err-su-email">Please enter a valid email address.</div>
+          </div>
+
+          <div class="input-group" id="ig-su-password">
+            <label for="su-password">Password</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="su-password" placeholder="Create a strong password" autocomplete="new-password"/>
+              <button type="button" class="toggle-pw" onclick="togglePw('su-password', this)" aria-label="Toggle password visibility">👁️</button>
+            </div>
+            <div class="error-msg" id="err-su-password">Password must be at least 8 characters.</div>
+          </div>
+
+          <!-- Role Picker -->
+          <div id="ig-su-role">
+            <p class="role-section-label">I am joining as…</p>
+            <div class="role-cards" role="radiogroup" aria-label="Join as helper or seeking help">
+              <label class="role-card">
+                <input type="radio" name="role" value="seeker" id="role-seeker" checked/>
+                <div class="role-inner">
+                  <span class="role-emoji">🧓</span>
+                  <span class="role-name">Seeking Help</span>
+                  <span class="role-desc">I need assistance with daily tasks</span>
+                </div>
+              </label>
+              <label class="role-card">
+                <input type="radio" name="role" value="helper" id="role-helper"/>
+                <div class="role-inner">
+                  <span class="role-emoji">🙋</span>
+                  <span class="role-name">Want to Help</span>
+                  <span class="role-desc">I want to assist seniors &amp; earn</span>
+                </div>
+              </label>
+            </div>
+            <div class="error-msg" id="err-su-role" style="display:none; margin-top:-12px; margin-bottom:12px;">Please select a role.</div>
+          </div>
+
+          <button type="submit" class="btn-primary" id="btn-signup">Create My Account</button>
+        </form>
+
+        <div class="switch-text">
+          Already have an account? <a onclick="switchTab('signin')">Sign in here</a>
+        </div>
+        <div class="panel-footer">By creating an account, you agree to GenBridge's Terms of Service and Privacy Policy.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast" role="alert" aria-live="polite">
+  <span class="toast-icon" id="toast-icon">✅</span>
+  <span id="toast-msg">Success!</span>
+</div>
+
+<script>
+  // ── TAB SWITCHING ──
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+    document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('tab-' + tab).setAttribute('aria-selected','true');
+
+    const panel = document.getElementById('panel-' + tab);
+    panel.classList.add('active');
+    // re-trigger animation
+    panel.style.animation = 'none';
+    requestAnimationFrame(() => { panel.style.animation = ''; });
+  }
+
+  // ── PASSWORD TOGGLE ──
+  function togglePw(id, btn) {
+    const input = document.getElementById(id);
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      btn.textContent = '👁️';
+    }
+  }
+
+  // ── VALIDATION HELPERS ──
+  function setError(groupId, errId, show) {
+    const group = document.getElementById(groupId);
+    const err   = document.getElementById(errId);
+    if (show) {
+      group.classList.add('has-error');
+      err.style.display = 'block';
+    } else {
+      group.classList.remove('has-error');
+      if (err) err.style.display = 'none';
+    }
+    return !show;
+  }
+
+  function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
+
+  // ── SIGN IN ──
+  function handleSignin(e) {
+    e.preventDefault();
+    const email    = document.getElementById('si-email').value;
+    const password = document.getElementById('si-password').value;
+    let valid = true;
+    valid = setError('ig-si-email',    'err-si-email',    !validateEmail(email)) && valid;
+    valid = setError('ig-si-password', 'err-si-password', password.length < 1)  && valid;
+    if (!valid) return;
+
+    const btn = document.getElementById('btn-signin');
+    btn.textContent = 'Signing in…';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.textContent = '✓ Welcome back!';
+      btn.classList.add('success-btn');
+      showToast('✅', 'Signed in successfully! Redirecting…');
+      setTimeout(() => {
+        btn.textContent = 'Sign In';
+        btn.classList.remove('success-btn');
+        btn.disabled = false;
+      }, 2800);
+    }, 1400);
+  }
+
+  // ── SIGN UP ──
+  function handleSignup(e) {
+    e.preventDefault();
+    const name     = document.getElementById('su-name').value;
+    const email    = document.getElementById('su-email').value;
+    const password = document.getElementById('su-password').value;
+    const role     = document.querySelector('input[name="role"]:checked');
+    let valid = true;
+    valid = setError('ig-su-name',     'err-su-name',     name.trim().length < 2)     && valid;
+    valid = setError('ig-su-email',    'err-su-email',    !validateEmail(email))       && valid;
+    valid = setError('ig-su-password', 'err-su-password', password.length < 8)        && valid;
+    if (!role) {
+      document.getElementById('err-su-role').style.display = 'block';
+      valid = false;
+    } else {
+      document.getElementById('err-su-role').style.display = 'none';
+    }
+    if (!valid) return;
+
+    const btn = document.getElementById('btn-signup');
+    btn.textContent = 'Creating your account…';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      const roleLabel = role.value === 'seeker' ? 'Seeker' : 'Helper';
+      btn.textContent = '✓ Account Created!';
+      btn.classList.add('success-btn');
+      showToast('🎉', `Welcome, ${name.split(' ')[0]}! Your ${roleLabel} account is ready.`);
+      setTimeout(() => {
+        btn.textContent = 'Create My Account';
+        btn.classList.remove('success-btn');
+        btn.disabled = false;
+      }, 2800);
+    }, 1600);
+  }
+
+  // ── TOAST ──
+  function showToast(icon, msg) {
+    const toast    = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-msg');
+    const toastIco = document.getElementById('toast-icon');
+    toastIco.textContent = icon;
+    toastMsg.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3800);
+  }
+
+  // ── CLEAR ERRORS ON INPUT ──
+  document.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const group = inp.closest('.input-group');
+      if (group) group.classList.remove('has-error');
+    });
+  });
+</script>
+</body>
+</html>
